@@ -57,10 +57,20 @@
         <el-form-item>
 
             <!-- 注册按钮组件-->
-            <router-view name="regiter">
-            </router-view>
+            <!--<router-view name="regiter">-->
+            <!--</router-view>-->
+
+            <el-button @click="openRegiter" type="primary" class="register">
+                注册
+            </el-button>
+
 
         </el-form-item>
+
+
+        <regiter ref="regiter">
+
+        </regiter>
 
     </el-form>
 
@@ -69,49 +79,85 @@
 
 <script>
 
+    import regiter from '../login/regiter';
 
     export default {
         name: "index",
+        components: {
+            regiter,
+        },
         data() {
+            var validateTel = (rule, value, callback) => {
+                if (value == '') {
+                    callback(new Error('请填写手机号码!'));
+                } else {
+                    var rexp = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+                    if (rexp.test(value)) {
+                        console.log('dd');
+                        callback();
+                    } else {
+                        console.log('www');
+                        callback(new Error('您的手机号码格式不正确!'));
+                    }
+                }
+            };
+            let validatePass = (rule, value, callback) => {
+                if (value == '') {
+                    callback(new Error('请填写密码!'));
+                } else {
+                    let rexp = /^[a-zA-Z]\w{5,17}$/;
+                    if (rexp.test(value)) {
+                        console.log('dd');
+                        callback();
+                    } else {
+                        console.log('www');
+                        callback(new Error('密码必须字母开头，长度在6~18之间，只能包含字母、数字和下划线!'));
+                    }
+                }
+            };
             return {
                 formData: {
                     tel: '',
                     pass: '',
                     veri: '',
                     checked: [],
-                },rules:{
-                    tel:[
-                        {required:true,message:'手机号码必须填写',trigger:'blur'},
-                        {min:11,max:11,message:'手机号码长度为11位',trigger:'blur'},
-                    ],pass:[
-                        {required:true,message:'密码必须填写',trigger:'blur'},
-                        {min:6,max:18,message:'密码长度在 6-18 字符之间!',trigger:'blur'},
-                    ],veri:[
-                        {required:true,message:'验证码未输入!',trigger:'blur'},
-                        {min:4,max:4,message:'验证码必须为4位!',trigger:'blur'},
-                    ],checked:[
-                        { type: 'array',required:true,message:'您未同意协议!',trigger:'change'},
+                }, rules: {
+
+                    tel: [
+                        {validator: validateTel, trigger: 'blur'},
+                        {min: 11, max: 11, message: '手机号码长度为11位', trigger: 'blur'},
+
+                    ], pass: [
+                        {validator: validatePass, trigger: 'blur'}
+                    ], veri: [
+                        {required: true, message: '验证码未输入!', trigger: 'blur'},
+                        {min: 4, max: 4, message: '验证码必须为4位!', trigger: 'blur'},
+                    ], checked: [
+                        {type: 'array', required: true, message: '您未同意协议!', trigger: 'change'},
                     ]
                 }
             };
         }, methods: {
-            onSubmit(){
+            onSubmit() {
                 // form.validate 校验整个表单属性
-                this.$refs.form.validate((valid) =>{
-                    if(valid){
+                this.$refs.form.validate((valid) => {
+                    if (valid) {
                         // 表单提交符合的时候打印
                         this.$message({
-                            type:'success',
-                            message:'验证通过!',
+                            type: 'success',
+                            message: '验证通过!',
                         })
 
-                    }else{
+                    } else {
                         // 不通过打印这个
                         this.$message.error('数据有误,请重新输入!');
                         return false;
                     }
                 })
+            }, openRegiter() {
+                this.$refs.regiter.centerDialogVisible = true;
             }
+
         }
     };
 </script>
@@ -147,7 +193,7 @@
             }
         }
 
-        .login {
+        .login, .register {
             font-size: 16px;
             width: 394px;
             height: 40px;
@@ -160,8 +206,6 @@
             width: 110px;
 
         }
-
-
 
     }
 

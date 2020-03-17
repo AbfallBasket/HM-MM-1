@@ -6,7 +6,6 @@ import VueRouter from 'vue-router';
 // 引入 子 组件
 import test from '../components/test';
 import login from '../views/login/index';
-import regiter from '../views/login/regiter';
 import useElement from '../views/useElement/index';
 
 // 引入验证码 组件
@@ -42,7 +41,6 @@ const router = new VueRouter({
                             path:'/login',
                             components:{
                                 side: siden,
-                                regiter:regiter
                             }
                         }
                     ]
