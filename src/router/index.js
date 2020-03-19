@@ -4,16 +4,18 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 // 引入 子 组件
-import test from '../components/test';
 import login from '../views/login/index';
 import useElement from '../views/useElement/index';
-
-// 引入验证码 组件
-import siden from '../views/iden/siden';
 
 
 // 注册全局路由
 Vue.use(VueRouter);
+
+// 注册原型 vue 的基地址
+Vue.prototype.$url='http://127.0.0.1:8085/heimamm/public';
+
+Vue.prototype.$oneLineurl='http://183.237.67.218:3002';
+
 
 // 解决重复点击路由路径重复报错 的 代码
 const routerPush = VueRouter.prototype.push;
@@ -26,7 +28,7 @@ const router = new VueRouter({
     routes: [
         {
             // test 测试路由
-            path: '/test', component: test,
+            path: '*', redirect:login,
         },
         {
             // 创建登录 login 路由跳转
@@ -36,15 +38,6 @@ const router = new VueRouter({
                 {
                     path: '/login',
                     component: useElement,
-                    children:[
-                        {
-                            path:'/login',
-                            components:{
-                                side: siden,
-                            }
-                        }
-                    ]
-
                 }
             ]
         },

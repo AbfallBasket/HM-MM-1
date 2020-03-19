@@ -23,11 +23,13 @@
                               minlength="4"
                               maxlength="4"></el-input>
                 </el-col>
-                <el-col :span="8" class="veri">
+                <el-col :span="6" class="veri" :offset="1">
                     <!-- 验证码 组件视图 -->
-                    <router-view name="side">
+                    <div class="loginVeri">
+                        <img :src="veriUrl" alt="" @click="getNewUrl">
+                    </div>
 
-                    </router-view>
+
                 </el-col>
             </el-row>
         </el-form-item>
@@ -57,8 +59,6 @@
         <el-form-item>
 
             <!-- 注册按钮组件-->
-            <!--<router-view name="regiter">-->
-            <!--</router-view>-->
 
             <el-button @click="openRegiter" type="primary" class="register">
                 注册
@@ -78,8 +78,13 @@
 </template>
 
 <script>
-
     import regiter from '../login/regiter';
+
+    //登录接口请求
+    import {apiSetLogin} from '@/api/login';
+
+    // 验证 手机和密码的 接口
+    import {validateTel, validatePass} from '@/utils/myCheck';
 
     export default {
         name: "index",
@@ -87,35 +92,9 @@
             regiter,
         },
         data() {
-            var validateTel = (rule, value, callback) => {
-                if (value == '') {
-                    callback(new Error('请填写手机号码!'));
-                } else {
-                    var rexp = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
-                    if (rexp.test(value)) {
-                        console.log('dd');
-                        callback();
-                    } else {
-                        console.log('www');
-                        callback(new Error('您的手机号码格式不正确!'));
-                    }
-                }
-            };
-            let validatePass = (rule, value, callback) => {
-                if (value == '') {
-                    callback(new Error('请填写密码!'));
-                } else {
-                    let rexp = /^[a-zA-Z]\w{5,17}$/;
-                    if (rexp.test(value)) {
-                        console.log('dd');
-                        callback();
-                    } else {
-                        console.log('www');
-                        callback(new Error('密码必须字母开头，长度在6~18之间，只能包含字母、数字和下划线!'));
-                    }
-                }
-            };
             return {
+                // 登录验证码
+                veriUrl:process.env.VUE_APP_BASEURL + '/captcha?type=login' + `&${Date.now()}`,
                 formData: {
                     tel: '',
                     pass: '',
@@ -138,10 +117,25 @@
                 }
             };
         }, methods: {
+            getNewUrl() {
+                //点击切换验证码
+                this.veriUrl = process.env.VUE_APP_BASEURL + '/captcha?type=login' + `&${Date.now()}`;
+            },
             onSubmit() {
+                //点击登录后，校验表单正确性
                 // form.validate 校验整个表单属性
                 this.$refs.form.validate((valid) => {
                     if (valid) {
+                        // 验证成功后，发送登录请求
+                        apiSetLogin({
+                            phone: this.formData.tel,
+                            password: this.formData.pass,
+                            code:this.formData.veri
+                        }).then(res =>{
+                            console.log(res);
+                        }).catch(err =>{
+                            console.log(err);
+                        });
                         // 表单提交符合的时候打印
                         this.$message({
                             type: 'success',
@@ -155,7 +149,12 @@
                     }
                 })
             }, openRegiter() {
+                // 点击注册按钮后，弹出注册框
+                this.$refs.regiter.sidenUrl = process.env.VUE_APP_BASEURL + '/captcha?type=sendsms' + `&${Date.now()}`;
+
                 this.$refs.regiter.centerDialogVisible = true;
+
+
             }
 
         }
@@ -166,6 +165,20 @@
 
     .formBox {
         margin-top: 20px;
+
+        .el-col-offset-1{
+            margin-left: 5% !important;
+        }
+        .loginVeri{
+            width:110px;
+            height:42px;
+            img{
+                display: block;
+                width: 100%;
+                height: 100%;
+            }
+        }
+
         .userVeri {
             width: 284px;
             height: 44px;

@@ -1,10 +1,15 @@
-
 // 导入 vue包
 import Vue from 'vue';
 // 导入APP父组件
 import App from './App.vue';
 // 导入router 路由包
 import router from './router/index';
+
+// 导入 axios包
+import axios from '../node_modules/axios';
+
+Vue.prototype.$ax = axios;
+
 
 // 导入 element-ui包
 import ElementUI from 'element-ui';
@@ -31,8 +36,8 @@ Vue.config.productionTip = false;
 
 // 创建 一个vue的 实例
 new Vue({
-  //  render 是讲 app.vue渲染到 vue实例中
-  render: h => h(App),
+    //  render 是讲 app.vue渲染到 vue实例中
+    render: h => h(App),
 //    把路由挂载到App中
-    router:router,
+    router: router,
 }).$mount('#app');
