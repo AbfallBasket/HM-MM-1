@@ -7,6 +7,8 @@ import VueRouter from 'vue-router';
 import login from '../views/login/index';
 import useElement from '../views/useElement/index';
 
+// 导入index组件
+import index from '../views/index/index';
 
 // 注册全局路由
 Vue.use(VueRouter);
@@ -41,11 +43,11 @@ const router = new VueRouter({
                 }
             ]
         },
-        // {
-            // 创建登录 login 路由跳转
-            // path: '/index',
-            // component:index,
-        // },
+        {
+            // 创建登录 index 路由跳转
+            path: '/index',
+            component:index,
+        },
 
     ],
 });
