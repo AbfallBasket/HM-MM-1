@@ -1,11 +1,10 @@
 <template>
 
-
     <div id="index">
         <el-container>
             <el-header class="sonHead">
                 <div class="leftBox">
-                    <i class="el-icon-s-fold"></i>
+                    <i class="el-icon-s-fold" @click="collapse"></i>
                     <img src="../../assets/index_logo.png" alt="">
                     <span>黑马妈妈</span>
                 </div>
@@ -23,12 +22,20 @@
 
             <el-container class="fatherBox">
 
-                <el-aside width="200px">
-                    Aside
+                <el-aside width="auto">
+
+                    <!-- 左侧导航栏-->
+                    <router-view name="myAside" ref="myAside">
+
+                    </router-view>
+
                 </el-aside>
 
                 <el-main class='sonMain'>
-                    Main
+                    <!-- 中间显示内容部分-->
+                    <router-view :name="temp">
+
+                    </router-view>
                 </el-main>
 
             </el-container>
@@ -42,10 +49,11 @@
 <script>
 
     // 导入 index 的获取用户信息
-    import {getInfo} from "@/api/index";
+    import {getInfo,logout} from "@/api/index";
 
     // 导入操作 token
     import {removeToken} from "@/utils/myToken";
+
 
     export default {
         name: "index",
@@ -55,7 +63,13 @@
                 imgUrl: '',
             }
         },
+        props:['temp'],
         methods: {
+            collapse(){
+               // 点击显示 隐藏 左侧列表
+               this.$refs.myAside.isCollapse = !this.$refs.myAside.isCollapse;
+
+            },
             logout() {
                 //    弹出提示框
                 this.$confirm('您确定要退出吗?',
@@ -65,16 +79,26 @@
                         type: 'warning'
                     }).then(() => {
 
-                    //    确定退出后，
-                    // 跳转到登录页
-                    // 清除token
-                    removeToken();
-                    this.$router.push('/login');
-                    this.$message({
-                        type: 'success',
-                        message: '退出成功'
-                    });
+                    // 发送服务器退出登录请求
+                    logout().then(res =>{
+                        console.log(res);
 
+                        if(res.data.code == 200){
+                            //    确定退出后，
+                            // 跳转到登录页
+                            // 清除token
+                            removeToken();
+                            this.$router.push('/login');
+                            this.$message({
+                                type: 'success',
+                                message: '退出成功'
+                            });
+                        }
+                    }).catch(err =>{
+
+                        console.log(err);
+
+                    });
 
                 }).catch(() => {
                     // 点击取消退出后，显示弹框
@@ -88,8 +112,7 @@
         },
         created() {
             getInfo().then(res => {
-
-
+                // 页面一加载获取用户信息
                 this.userName = res.data.data.username;
                 this.imgUrl = process.env.VUE_APP_BASEURL + '/' + res.data.data.avatar;
                 console.log(res);
@@ -163,24 +186,27 @@
                 }
 
                 img {
+                    margin: 9px 9px 0 0;
+                    -webkit-border-radius: 50%;
+                    -moz-border-radius: 50%;
+                    border-radius: 50%;
                     height: 43px;
                     width: 43px;
                     display: inline-block;
-                    padding: 9px 9px 0 0;
                 }
 
             }
         }
     }
 
-    .el-header, .el-footer {
-        background-color: #B3C0D1;
+    .el-header {
+        background-color: #FFFFFF;
         color: #333;
         text-align: center;
     }
 
     .el-aside {
-        background-color: #D3DCE6;
+        background-color: #FFFFFF;
         color: #333;
         text-align: center;
         height: 100%;
@@ -195,6 +221,7 @@
 
     .el-container {
         height: 100%;
+        /*box-shadow:5px 5px 15px 5px #3F3F3F;*/
 
     }
 

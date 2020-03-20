@@ -155,7 +155,7 @@
                         // 表单提交符合的时候打印
                         this.$message({
                             type: 'success',
-                            message: '验证通过!',
+                            message: '登录成功!',
                         })
 
                     } else {
