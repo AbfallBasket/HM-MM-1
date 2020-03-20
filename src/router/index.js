@@ -42,9 +42,9 @@ const router = new VueRouter({
             ]
         },
         // {
-        //     // 创建登录 login 路由跳转
-        //     path: '/useElement',
-        //     component:useElement,
+            // 创建登录 login 路由跳转
+            // path: '/index',
+            // component:index,
         // },
 
     ],

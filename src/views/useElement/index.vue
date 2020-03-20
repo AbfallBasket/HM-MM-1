@@ -37,7 +37,7 @@
         <!--协议框-->
         <el-form-item prop="checked">
             <span class="tk">
-                <el-checkbox v-model="formData.checked" id="cheBox" name="userChe">
+                <el-checkbox v-model="formData.checked" id="cheBox" name="userChe" :checked="true">
                     <el-link :underline="false" class="tp">我已阅读并同意</el-link>
                     <el-link class="ts" :underline="false">用户协议</el-link>
                     <el-link :underline="false" class="tp">和</el-link>
@@ -78,6 +78,7 @@
 </template>
 
 <script>
+    // 登录子组件
     import regiter from '../login/regiter';
 
     //登录接口请求
@@ -85,6 +86,10 @@
 
     // 验证 手机和密码的 接口
     import {validateTel, validatePass} from '@/utils/myCheck';
+
+
+    // 设置请求 token 的接口
+    import {setToken} from "@/utils/myToken";
 
     export default {
         name: "index",
@@ -96,8 +101,8 @@
                 // 登录验证码
                 veriUrl:process.env.VUE_APP_BASEURL + '/captcha?type=login' + `&${Date.now()}`,
                 formData: {
-                    tel: '',
-                    pass: '',
+                    tel: '17674713618',
+                    pass: 'wocanima123',
                     veri: '',
                     checked: [],
                 }, rules: {
@@ -135,6 +140,14 @@
 
                             // 登录成功后的
                             console.log(res);
+
+                            // 跳转到首页
+                            this.$router.push('/index');
+                        //    localstorage 关闭浏览器不清空
+                        //    sessinstorage 关闭浏览器 清空
+
+                            // 保存 token
+                            setToken(res.data.data.token)
 
                         }).catch(err =>{
                             console.log(err);
