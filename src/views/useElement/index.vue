@@ -132,7 +132,10 @@
                             password: this.formData.pass,
                             code:this.formData.veri
                         }).then(res =>{
+
+                            // 登录成功后的
                             console.log(res);
+
                         }).catch(err =>{
                             console.log(err);
                         });
