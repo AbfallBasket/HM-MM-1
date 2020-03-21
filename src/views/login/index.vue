@@ -34,6 +34,8 @@
 
 <style scoped lang="less">
 
+
+
     .login {
         height: 100%;
         background: linear-gradient(225deg, rgba(20, 147, 250, 1), rgba(1, 198, 250, 1));

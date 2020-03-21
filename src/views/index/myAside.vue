@@ -4,11 +4,12 @@
                 class="el-menu-vertical-demo"
                 :collapse="isCollapse"
                 :router="true"
+                default-active="/index/chart"
         >
 
             <el-menu-item index="/index/chart">
                 <i class="el-icon-pie-chart"></i>
-                <span slot="title" @click="btn">数据概览</span>
+                <span slot="title">数据概览</span>
             </el-menu-item>
 
             <el-menu-item index="/index/user">
@@ -47,9 +48,6 @@
           }
         },
         methods: {
-            btn(){
-                console.log('dd');
-            }
         }
     }
 </script>

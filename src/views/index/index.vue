@@ -36,6 +36,8 @@
                     <router-view :name="temp">
 
                     </router-view>
+
+
                 </el-main>
 
             </el-container>
@@ -52,7 +54,7 @@
     import {getInfo,logout} from "@/api/index";
 
     // 导入操作 token
-    import {removeToken} from "@/utils/myToken";
+    import {removeToken,getToken} from "@/utils/myToken";
 
 
     export default {
@@ -111,11 +113,27 @@
             }
         },
         created() {
+
+            //  判断是否拥有 token 防止直接访问index
+            if(!getToken()){
+                this.$message.error('对不起,您还未登录,请登录后访问!');
+                this.$router.push('/login');
+                return;
+            }
+
             getInfo().then(res => {
-                // 页面一加载获取用户信息
-                this.userName = res.data.data.username;
-                this.imgUrl = process.env.VUE_APP_BASEURL + '/' + res.data.data.avatar;
                 console.log(res);
+
+                if(res.data.code == 206){
+                    this.$message.error('您的Token值错误,请登录后访问!');
+                    this.$router.push('/login');
+                    return;
+                }else if(res.data.code == 200){
+                    // 页面一加载获取用户信息
+                    this.userName = res.data.data.username;
+                    this.imgUrl = process.env.VUE_APP_BASEURL + '/' + res.data.data.avatar;
+
+                }
 
 
             }).catch(err => {
@@ -137,6 +155,11 @@
 
     .fatherBox {
         height: 100%;
+
+
+        .sonMain{
+            background: #E9E9E9;
+        }
     }
 
     #index {
@@ -198,6 +221,7 @@
             }
         }
     }
+
 
     .el-header {
         background-color: #FFFFFF;

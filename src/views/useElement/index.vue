@@ -121,7 +121,13 @@
                     ]
                 }
             };
-        }, methods: {
+        },
+        mounted(){
+        //    一旦加载用户表单登录注册就重新获取验证码
+            this.veriUrl = process.env.VUE_APP_BASEURL + '/captcha?type=login' + `&${Date.now()}`;
+
+        }
+        ,methods: {
             getNewUrl() {
                 //点击切换验证码
                 this.veriUrl = process.env.VUE_APP_BASEURL + '/captcha?type=login' + `&${Date.now()}`;

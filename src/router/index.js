@@ -20,6 +20,12 @@ import user from '../views/user/user';
 //引入index子组件
 import myAside from '../views/index/myAside';
 
+
+// 导入 进度条插件 的脚本和css
+import NproGress from '../../node_modules/nprogress';
+import 'nprogress/nprogress.css';
+
+
 // 注册全局路由
 Vue.use(VueRouter);
 
@@ -64,6 +70,10 @@ const router = new VueRouter({
             },
             children: [
                 {
+                    // test 测试路由
+                    path: '/index', redirect: '/index/chart',
+                },
+                {
                     path:'/index',
                     components:{
                         'myAside': myAside,
@@ -85,4 +95,21 @@ const router = new VueRouter({
 
     ],
 });
+
+
+router.beforeEach((to,form,next) =>{
+//     开启进度条
+    NproGress.start();
+//    执行后面的代码
+    next();
+});
+
+router.afterEach(() =>{
+//    关闭进度条
+    setTimeout(() =>{
+        NproGress.done();
+    },120);
+});
+
+
 export default router

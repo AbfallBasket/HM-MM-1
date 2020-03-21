@@ -21,5 +21,9 @@
 
 <style>
 
+    #nprogress .bar {
 
+        background:green !important;
+
+    }
 </style>
