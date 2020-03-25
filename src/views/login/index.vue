@@ -5,9 +5,9 @@
             
             <div class="title">
                 <img class="titleImg" src="../../../src/assets/form_log.png" alt="">
-                <span class="titleName">黑马妈妈</span>
+                <span class="titleName">黑马妈妈{{this.$store.state.name}}</span>
                 <span class="titleLine"></span>
-                <span class="titleLogin">  用户登录</span>
+                <span class="titleLogin" @click="btn"> 用户登录</span>
             </div>
 
 
@@ -28,7 +28,14 @@
 
 
     export default {
-        name: "index"
+        name: "index",
+        methods:{
+            btn(){
+                this.$store.commit('changeName',{
+                    name:'666'
+                });
+            }
+        }
     }
 </script>
 

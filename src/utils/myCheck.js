@@ -29,8 +29,24 @@ const validatePass = (rule, value, callback) => {
     }
 };
 
+// 检测 邮箱的检测方法
+let validateEmail = (rule, value, callback) => {
+    if (value == '') {
+        callback(new Error('请填写邮箱号码!'));
+    } else {
+        let rexp = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+        if (rexp.test(value)) {
+            callback();
+        } else {
+            callback(new Error('您的邮箱格式不正确!'));
+        }
+    }
+};
+
+
 //暴露接口
 export {
     validateTel,
     validatePass,
+    validateEmail
 }

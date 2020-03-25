@@ -147,13 +147,11 @@
                             // 登录成功后的
                             console.log(res);
 
+                            // 保存 token
+                            setToken(res.data.data.token);
+
                             // 跳转到首页
                             this.$router.push('/index');
-                        //    localstorage 关闭浏览器不清空
-                        //    sessinstorage 关闭浏览器 清空
-
-                            // 保存 token
-                            setToken(res.data.data.token)
 
                         }).catch(err =>{
                             console.log(err);

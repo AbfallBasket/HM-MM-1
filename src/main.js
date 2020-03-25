@@ -3,7 +3,7 @@ import Vue from 'vue';
 // 导入APP父组件
 import App from './App.vue';
 // 导入router 路由包
-import router from './router/index';
+import {router,store} from './router/index';
 
 // 导入 axios包
 import axios from '../node_modules/axios';
@@ -26,6 +26,10 @@ import '../src/style/index.css';
 // 导入 全局样式 less
 import 'less';
 
+// 导入 全局 过滤器  filter
+import './filters/timefilter';
+
+
 
 // 全局注册 element包
 Vue.use(ElementUI);
@@ -36,6 +40,7 @@ Vue.config.productionTip = false;
 
 // 创建 一个vue的 实例
 new Vue({
+    store:store,
     //  render 是讲 app.vue渲染到 vue实例中
     render: h => h(App),
 //    把路由挂载到App中

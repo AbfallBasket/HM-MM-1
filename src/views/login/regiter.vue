@@ -107,7 +107,7 @@
     import {apiGetCode, apiSetUser,} from '@/api/register';
 
     // 验证 手机和密码的 接口
-    import {validateTel, validatePass} from '@/utils/myCheck';
+    import {validateTel, validatePass,validateEmail} from '@/utils/myCheck';
 
     // @ 可以代替 src目录
 
@@ -116,19 +116,6 @@
         name: "regiter",
         data() {
 
-            // 检测 邮箱的检测方法
-            let validateEmail = (rule, value, callback) => {
-                if (value == '') {
-                    callback(new Error('请填写邮箱号码!'));
-                } else {
-                    let rexp = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
-                    if (rexp.test(value)) {
-                        callback();
-                    } else {
-                        callback(new Error('您的邮箱格式不正确!'));
-                    }
-                }
-            };
             return {
                 centerDialogVisible: false,
                 hideRed: false,
@@ -232,12 +219,13 @@
                         }).then(res => {
                             if (res.data.code == 200) {
                                 this.$message.success('注册成功!');
-                                //  点击取消按钮后，重置表单数据
+                                //  注册后，重置表单数据
                                 this.$refs.form.resetFields();
-                                //  清除图片路径
-                                this.image = null;
                                 //    关闭面板
                                 this.centerDialogVisible = false;
+                                //  清除图片路径
+                                this.image = null;
+
 
                                 console.log(res);
 

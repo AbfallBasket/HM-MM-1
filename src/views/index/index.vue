@@ -51,10 +51,10 @@
 <script>
 
     // 导入 index 的获取用户信息
-    import {getInfo,logout} from "@/api/index";
+    import {logout} from "@/api/index";
 
     // 导入操作 token
-    import {removeToken,getToken} from "@/utils/myToken";
+    import {removeToken} from "@/utils/myToken";
 
 
     export default {
@@ -65,11 +65,11 @@
                 imgUrl: '',
             }
         },
-        props:['temp'],
+        props: ['temp'],
         methods: {
-            collapse(){
-               // 点击显示 隐藏 左侧列表
-               this.$refs.myAside.isCollapse = !this.$refs.myAside.isCollapse;
+            collapse() {
+                // 点击显示 隐藏 左侧列表
+                this.$refs.myAside.isCollapse = !this.$refs.myAside.isCollapse;
 
             },
             logout() {
@@ -82,21 +82,23 @@
                     }).then(() => {
 
                     // 发送服务器退出登录请求
-                    logout().then(res =>{
+                    logout().then(res => {
                         console.log(res);
 
-                        if(res.data.code == 200){
+                        if (res.data.code == 200) {
                             //    确定退出后，
                             // 跳转到登录页
                             // 清除token
                             removeToken();
+
                             this.$router.push('/login');
+
                             this.$message({
                                 type: 'success',
                                 message: '退出成功'
                             });
                         }
-                    }).catch(err =>{
+                    }).catch(err => {
 
                         console.log(err);
 
@@ -112,34 +114,15 @@
                 })
             }
         },
-        created() {
+        mounted() {
 
-            //  判断是否拥有 token 防止直接访问index
-            if(!getToken()){
-                this.$message.error('对不起,您还未登录,请登录后访问!');
-                this.$router.push('/login');
-                return;
-            }
+            // 获取vuex 设置 的store中的保存的用户信息
+            this.userName = this.$store.state.username;
 
-            getInfo().then(res => {
-                console.log(res);
+            this.imgUrl = this.$store.state.imgUrl;
 
-                if(res.data.code == 206){
-                    this.$message.error('您的Token值错误,请登录后访问!');
-                    this.$router.push('/login');
-                    return;
-                }else if(res.data.code == 200){
-                    // 页面一加载获取用户信息
-                    this.userName = res.data.data.username;
-                    this.imgUrl = process.env.VUE_APP_BASEURL + '/' + res.data.data.avatar;
-
-                }
-
-
-            }).catch(err => {
-                console.log(err);
-            })
         }
+
     }
 </script>
 
@@ -156,9 +139,10 @@
     .fatherBox {
         height: 100%;
 
-
-        .sonMain{
+        .sonMain {
             background: #E9E9E9;
+            width: 100%;
+            /*overflow: hidden;*/
         }
     }
 
@@ -196,7 +180,8 @@
 
                 .boxSon {
                     line-height: 55px;
-                    .loginOut {order-radius: 4px;
+                    .loginOut {
+                        order-radius: 4px;
                         border-radius: 4px;
                     }
                     span {
@@ -222,11 +207,12 @@
         }
     }
 
-
     .el-header {
         background-color: #FFFFFF;
         color: #333;
         text-align: center;
+        box-shadow:-15px 0px 15px 5px #3F3F3F;
+
     }
 
     .el-aside {
@@ -245,7 +231,7 @@
 
     .el-container {
         height: 100%;
-        /*box-shadow:5px 5px 15px 5px #3F3F3F;*/
+        /*box-shadow:-15px 15px 15px 5px #3F3F3F;*/
 
     }
 

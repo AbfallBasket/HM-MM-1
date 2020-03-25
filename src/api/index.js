@@ -34,29 +34,10 @@ const logout = () =>{
     })
 };
 
-
-
-// 获取 学科列表接口
-const getSubject = (formData) =>{
-    return lineBashUrl({
-        url:'/subject/list',
-        params:formData,
-        headers:{
-            token:getToken(),
-        }
-    })
-};
-
-
-
-
-
-
 // 暴露接口
 export {
     getInfo,
     logout,
-    getSubject,
 }
 
 
