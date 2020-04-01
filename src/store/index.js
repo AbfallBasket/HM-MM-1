@@ -16,6 +16,7 @@ const store = new Vuex.Store({
         name:'xjj',
         username:'',
         imgUrl:'',
+        role:'', //用户角色
     },
     mutations:{
         changeName : (state,params) =>{
@@ -27,7 +28,12 @@ const store = new Vuex.Store({
         ,setUser:(state,info)=>{
             state.username = info.username;
             state.imgUrl = info.imgUrl;
+        },
+
+        setRole:(state,payload) =>{
+            state.role = payload;
         }
+
     }
 });
 

@@ -55,8 +55,6 @@ const editSubject = (data) => {
         data,
     })
 };
-
-
 // 暴露学科 的信息 接口
 export {
     getSubject,

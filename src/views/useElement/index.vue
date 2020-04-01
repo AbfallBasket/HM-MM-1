@@ -85,8 +85,8 @@
     import {apiSetLogin} from '@/api/login';
 
     // 验证 手机和密码的 接口
-    import {validateTel, validatePass} from '@/utils/myCheck';
-
+    import {validateTel, } from '@/utils/myCheck';
+    // validatePass
 
     // 设置请求 token 的接口
     import {setToken} from "@/utils/myToken";
@@ -112,7 +112,7 @@
                         {min: 11, max: 11, message: '手机号码长度为11位', trigger: 'blur'},
 
                     ], pass: [
-                        {validator: validatePass, trigger: 'blur'}
+                        // {validator: validatePass, trigger: 'blur'}
                     ], veri: [
                         {required: true, message: '验证码未输入!', trigger: 'blur'},
                         {min: 4, max: 4, message: '验证码必须为4位!', trigger: 'blur'},
@@ -144,24 +144,29 @@
                             code:this.formData.veri
                         }).then(res =>{
 
-                            // 登录成功后的
-                            console.log(res);
+                            if(res.data.code == 200){
+                                // 登录成功后的
+                                console.log(res);
 
-                            // 保存 token
-                            setToken(res.data.data.token);
+                                // 保存 token
+                                setToken(res.data.data.token);
 
-                            // 跳转到首页
-                            this.$router.push('/index');
+                                // 跳转到首页
+                                this.$router.push('/index');
 
+                                // 表单提交符合的时候打印
+                                // this.$message({
+                                //     type: 'success',
+                                //     message: '登录成功!',
+                                // });
+
+                            }else{
+                                this.$message.error(res.data.message);
+
+                            }
                         }).catch(err =>{
                             console.log(err);
                         });
-                        // 表单提交符合的时候打印
-                        this.$message({
-                            type: 'success',
-                            message: '登录成功!',
-                        })
-
                     } else {
                         // 不通过打印这个
                         this.$message.error('数据有误,请重新输入!');

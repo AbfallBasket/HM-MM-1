@@ -19,6 +19,8 @@ import 'element-ui/lib/theme-chalk/index.css';
 // 导入 element 组件包
 import 'element-ui/lib/index';
 
+// 全局注册 element包
+Vue.use(ElementUI);
 
 // 导入全局样式 style
 import '../src/style/index.css';
@@ -30,9 +32,25 @@ import 'less';
 import './filters/timefilter';
 
 
+// 引入 学科子组件 和 企业子组件
+import subSel from './components/subSel';
+import enterSel from './components/enterSel';
+// 引入 城市选择组件
+import myCity from './components/myCity';
+// 全局注册 子组件
+Vue.component('subSelCom',subSel);
+Vue.component('enterCom',enterSel);
+Vue.component('myCity',myCity);
 
-// 全局注册 element包
-Vue.use(ElementUI);
+
+// 注册 富文本编辑框
+import vueQuillEditor from 'vue-quill-editor';
+import '../node_modules/quill/dist/quill.core.css'
+import '../node_modules/quill/dist/quill.snow.css'
+import '../node_modules/quill/dist/quill.bubble.css'
+
+// 全局注册 富文本
+Vue.use(vueQuillEditor);
 
 // 关闭提示
 Vue.config.productionTip = false;

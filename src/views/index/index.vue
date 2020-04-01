@@ -25,19 +25,17 @@
                 <el-aside width="auto">
 
                     <!-- 左侧导航栏-->
-                    <router-view name="myAside" ref="myAside">
 
-                    </router-view>
+                    <myAside ref="myAside">
 
+                    </myAside>
                 </el-aside>
 
                 <el-main class='sonMain'>
                     <!-- 中间显示内容部分-->
-                    <router-view :name="temp">
+                    <router-view>
 
                     </router-view>
-
-
                 </el-main>
 
             </el-container>
@@ -56,16 +54,20 @@
     // 导入操作 token
     import {removeToken} from "@/utils/myToken";
 
+    // 导入子组件
+    import myAside from './myAside';
 
     export default {
         name: "index",
+        components:{
+            myAside
+        },
         data() {
             return {
                 userName: '',
                 imgUrl: '',
             }
         },
-        props: ['temp'],
         methods: {
             collapse() {
                 // 点击显示 隐藏 左侧列表

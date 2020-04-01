@@ -20,9 +20,9 @@
                 <el-form-item label="角色状态">
                     <el-select class="normal" v-model="formInline.role_id" placeholder="角色">
                         <el-option label="所有" value="" selected></el-option>
-                        <el-option label="管理员" value="2"></el-option>
-                        <el-option label="老师" value="3"></el-option>
-                        <el-option label="学生" value="4"></el-option>
+                        <el-option label="管理员" :value="2"></el-option>
+                        <el-option label="老师" :value="3"></el-option>
+                        <el-option label="学生" :value="4"></el-option>
                     </el-select>
                 </el-form-item>
 
@@ -99,13 +99,13 @@
                         label="操作"
                         width="150">
                     <template slot-scope="props">
-                        <el-button type="text" size="small" @click="editUser(props.row.id,props.row)">编辑</el-button>
+                        <el-button type="text" size="small" @click="editUser(props.row)">编辑</el-button>
 
-                        <el-button type="text" size="small" @click="starStop(props.row.id,props.row.status)">
+                        <el-button type="text" size="small" @click="starStop(props.row)">
                             {{(props.row.status == 0)?'启用':'禁用' }}
                         </el-button>
 
-                        <el-button type="text" size="small" @click="removeUser(props.row.id)">删除</el-button>
+                        <el-button v-if="['管理员','超级管理员'].includes($store.state.role)" type="text" size="small" @click="removeUser(props.row)">删除</el-button>
                     </template>
                 </el-table-column>
 
@@ -155,13 +155,7 @@
         },
         data() {
             return {
-
                 activeRed: '',
-
-
-                tempStatus: null,
-
-                removeTemp: null,
 
                 getInfoTemp: this.getInfo,
 
@@ -181,57 +175,42 @@
                 tableData: [],
             }
         }, methods: {
-            starStop(id, status) {
-                if (status == 1) {
-                    this.tempStatus = 0;
-                } else {
-                    this.tempStatus = 1;
-                }
-                setStatStop(id, this.tempStatus).then(res => {
+            starStop(row) {
+                setStatStop(row.id, row.status).then(res => {
 
 
                     if (res.data.code == 200) {
 
-                        this.getInfoTemp(this.page, this.siziPage);
+
+                        this.getInfoTemp(this.currentPage1, this.siziPage);
 
                         if (this.tempStatus == 0) {
                             this.$message.error('禁用成功!');
                         } else {
                             this.$message.success('启用成功!');
                         }
-
                     } else {
                         this.$message.error('修改失败!');
                     }
                     console.log(res);
-
-
                 }).catch(err => {
                     console.log(err);
                 })
-
-
             },
-            removeUser(id) {
-                if (this.tableData.length == 1) {
+            removeUser(row) {
+                if (this.tableData.length == 1 && this.currentPage1 != 1) {
                     console.log('此时只有一条数据!');
-                    if (this.currentPage1 == 1) {
-                        // 在只有一条数据,而且是第一页的情况下
-                        // 不需要 当前页数 -1 否则报错
-                        this.removeTemp = this.currentPage1;
-                    } else {
-                        this.removeTemp = this.currentPage1 - 1;
-                    }
-                } else {
-                    this.removeTemp = this.currentPage1;
+                    // 在只有一条数据,而且是第一页的情
+                    // 况下 不需要 当前页数 -1 否则报错
+                    this.currentPage1--;
                 }
                 // 删除用户
-                removeUser(id).then(res => {
+                removeUser(row.id).then(res => {
                     console.log(res);
                     if (res.data.code == 200) {
                         // 删除成功后，刷新当前页
                         this.$message.success('删除成功!');
-                        this.getInfoTemp(this.removeTemp, this.siziPage);
+                        this.getInfoTemp(this.currentPage1, this.siziPage);
 
                     } else {
                         this.$message.success('删除失败!');
@@ -244,27 +223,28 @@
             addUser() {
                 //    添加用户
                 // 假如是添加用户，则把编辑id清除
-                this.$refs.useradd.editId = null;
-
-                this.$refs.useradd.userForm = {};
+                this.$refs.useradd.isEdit = false;
 
                 this.$refs.useradd.dialogVisible = true;
+                this.$refs.useradd.$nextTick(() => {
+                    this.$refs.useradd.$refs.ruleForm.resetFields();
+                });
+
+
             },
-            editUser(id,row){
-            //    这是点击编辑页面后，执行的代码
-                if(row.id !== this.$refs.useradd.editId){
-                    // 点击后，把id传递给编辑页面
-                    this.$refs.useradd.editId = id;
-
-                    // 把 要编辑的内容 传递给 编辑框
-                    this.$refs.useradd.userForm = JSON.parse(JSON.stringify(row));
-                    // 打开编辑学科
-                }
+            editUser(row) {
 
                 this.$refs.useradd.dialogVisible = true;
+                this.$refs.useradd.isEdit = true;
+                //    这是点击编辑页面后，执行的代码
+                // 点击后，把id传递给编辑页面
+                // 把 要编辑的内容 传递给 编辑框
+                this.$refs.useradd.$nextTick(() => {
+                    this.$refs.useradd.userForm = JSON.parse(JSON.stringify(row));
+                });
+                // 打开编辑学科
 
                 console.log('编辑用户');
-
             },
             onSubmit() {
                 //    这是点击搜索后
@@ -277,8 +257,9 @@
 
             },
             clearForm() {
+                this.formInline.role_id = '';
+                this.$refs.searForm.resetFields();
                 // 清空表单后
-                this.formInline = {};
                 this.total = 1;
                 this.getInfoTemp();
 

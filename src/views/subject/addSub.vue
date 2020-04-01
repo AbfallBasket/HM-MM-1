@@ -1,33 +1,32 @@
 <template>
-    <div>
         <el-dialog
+                :title="isEdit == false ? '新增学科':'编辑学科' "
                 :visible.sync="dialogVisible"
                 width="602px"
                 center>
-            <span slot="title" ref="edit">新增学科</span>
 
-            <el-form :model="subForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+            <el-form :model="ruleForm" :rules="rules" ref="form" label-width="100px" class="demo-ruleForm">
 
                 <el-form-item label="学科编号" prop="rid">
-                    <el-input v-model="subForm.rid"></el-input>
+                    <el-input v-model="ruleForm.rid"></el-input>
                 </el-form-item>
 
                 <el-form-item label="学科名称" prop="name">
-                    <el-input v-model="subForm.name"></el-input>
+                    <el-input v-model="ruleForm.name"></el-input>
                 </el-form-item>
 
                 <el-form-item label="学科简称" prop="short_name">
-                    <el-input type="textarea" v-model="subForm.short_name">
+                    <el-input type="textarea" v-model="ruleForm.short_name">
 
                     </el-input>
                 </el-form-item>
 
                 <el-form-item label="学科简介" prop="intro">
-                    <el-input v-model="subForm.intro"></el-input>
+                    <el-input v-model="ruleForm.intro"></el-input>
 
                 </el-form-item>
                 <el-form-item label="备注" prop="remark">
-                    <el-input v-model="subForm.remark"></el-input>
+                    <el-input v-model="ruleForm.remark"></el-input>
                 </el-form-item>
 
 
@@ -42,7 +41,6 @@
                 </el-button>
             </span>
         </el-dialog>
-    </div>
 </template>
 
 <script>
@@ -56,12 +54,13 @@
         name: "addSub",
         data() {
             return {
-                editId: null,
+                isEdit: false,
 
                 page: null,
                 totalPage: null,
                 dialogVisible: false,
-                subForm: {
+                ruleForm: {
+                    id:'',
                     rid: '',
                     name: '',
                     short_name: '',
@@ -81,19 +80,15 @@
             cole() {
                 //    关闭面板
                 this.dialogVisible = false;
-
                 console.log('关闭面板了!');
-                //  取消后，重置表单数据
-                this.$refs.ruleForm = [];
-                // this.$refs.ruleForm.resetFields();
             },
             addSub() {
-                this.$refs.ruleForm.validate((valid) => {
+                this.$refs.form.validate((valid) => {
                     if (valid) {
-                        if (this.editId != null) {
+                        if (this.isEdit) {
                             console.log('我是编辑');
 
-                            editSubject(this.subForm).then(res => {
+                            editSubject(this.ruleForm).then(res => {
                                 console.log(res);
                                 if (res.data.code == 200) {
                                     this.beforeSub();
@@ -110,7 +105,7 @@
                             })
                         } else {
                             console.log('我是添加');
-                            addSubject(this.subForm).then(res => {
+                            addSubject(this.ruleForm).then(res => {
                                 console.log(res);
                                 if (res.data.code == 200) {
                                     this.beforeSub();
@@ -142,22 +137,8 @@
                 //    关闭面板
                 this.dialogVisible = false;
                 //  注册后，重置表单数据
-                this.$refs.ruleForm.resetFields();
+                // this.$refs.form.resetFields();
             }
-        }
-        , watch: {
-
-            'editId': function (val) {
-                if (val != null) {
-
-                    this.subForm.id = this.editId;
-                    this.$refs.edit.innerText = '编辑学科';
-
-                } else {
-                    this.$refs.edit.innerText = '新增学科';
-                }
-            }
-
         }
     }
 </script>

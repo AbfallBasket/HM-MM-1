@@ -1,0 +1,67 @@
+<template>
+
+    <div>
+        <el-select
+                   :value="value"
+                   @input="v => {$emit('input',v)}"
+
+                   placeholder="请选择学科">
+
+            <el-option v-if="isQuery"
+                       label="所有学科"
+                       value="">
+
+            </el-option>
+
+            <el-option v-for="(item, index) in subjectList"
+                       :key="index"
+                       :label="item.name"
+                       :value="item.id">
+
+            </el-option>
+        </el-select>
+    </div>
+</template>
+
+<script>
+
+    import {getSubject} from "@/api/subject";
+
+    export default {
+        name: "subSel",
+        props: {
+            'value':{
+                type:[String,Number]
+            },
+            'isQuery':{
+                type:Boolean,
+                default:true
+            }
+        },
+        data() {
+            return {
+                // 学科数据
+                subjectList: [],
+                // 内部选中的学科
+                // selfSubject: this.value
+            };
+        },
+        created() {
+            // 获取学科数据
+            getSubject().then(res => {
+                console.log(res);
+                this.subjectList = res.data.data.items;
+            });
+        },
+        // 监听数据改变
+        // watch: {
+        //     selfSubject() {
+        //         this.$emit('input', this.selfSubject);
+        //     }
+        // }
+    }
+</script>
+
+<style scoped>
+
+</style>

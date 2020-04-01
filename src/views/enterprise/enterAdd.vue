@@ -1,10 +1,10 @@
 <template>
     <div>
         <el-dialog
+                :title="isEdit == false ? '新增企业' : '编辑企业'"
                 :visible.sync="dialogVisible"
                 width="602px"
                 center>
-            <span slot="title" ref="edit">新增企业</span>
 
             <el-form :model="subForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
 
@@ -56,11 +56,12 @@
         name: "enterAdd",
         data() {
             return {
-                editId: null,
+                isEdit: false,
 
                 page: null,
                 totalPage: null,
                 dialogVisible: false,
+
                 subForm: {
                     eid: '',
                     name: '',
@@ -86,14 +87,13 @@
                 //    关闭面板
                 this.dialogVisible = false;
                 //  取消后，重置表单数据
-                this.$refs.ruleForm = [];
+                // this.subForm = {};
                 // this.$refs.ruleForm.resetFields();
-
             },
             addSub() {
                 this.$refs.ruleForm.validate((valid) => {
                     if (valid) {
-                        if (this.editId != null) {
+                        if (this.isEdit) {
                             console.log('我是编辑');
 
                             editEnterprise(this.subForm).then(res => {
@@ -105,7 +105,7 @@
                                 } else if (res.data.code == 201) {
                                     this.$message.error('企业编号不能重复!');
                                 } else {
-                                    this.$message.error('编辑失败!');
+                                    this.$message.error(res.data.message);
                                 }
                                 console.log(res)
                             }).catch(err => {
@@ -120,7 +120,7 @@
                                     this.$message.success('添加成功!');
                                     console.log(res);
                                 } else {
-                                    this.$message.error('添加失败!');
+                                    this.$message.error(res.data.message);
                                 }
                             }).catch(err => {
                                 console.log(err);
@@ -141,27 +141,12 @@
                 this.page = this.$parent.currentPage1;
                 this.totalPage = this.$parent.siziPage;
                 this.$parent.isSearTemp(this.page, this.totalPage);
-
                 //    关闭面板
                 this.dialogVisible = false;
                 //  注册后，重置表单数据
-                this.$refs.ruleForm.resetFields();
+                // this.$refs.ruleForm.resetFields();
 
             }
-        }
-        , watch: {
-
-            'editId': function (val) {
-                if (val != null) {
-
-                    this.subForm.id = this.editId;
-                    this.$refs.edit.innerText = '编辑企业';
-
-                } else {
-                    this.$refs.edit.innerText = '新增企业';
-                }
-            }
-
         }
     }
 </script>

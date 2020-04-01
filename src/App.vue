@@ -22,9 +22,7 @@
 <style lang="less">
 
 
-    .el-input,.el-input__inner{
-        height: 38px !important;
-    }
+
     #nprogress .bar {
 
         background:green !important;
@@ -62,6 +60,10 @@
             justify-content: center;
             align-items: center;
             margin-bottom: 15px;
+
+            .el-input,.el-input__inner{
+                height: 38px;
+            }
         }
 
         .el-table {
@@ -80,11 +82,12 @@
 
     .el-pagination {
         /*padding: 0 30px 30px 0;*/
-        padding: 30px;
+        /*padding: 30px;*/
+
     }
 
     .subList {
-        /*padding: 19px;*/
+        padding: 19px;
         border-radius: 5px;
         background: #FFF;
     }

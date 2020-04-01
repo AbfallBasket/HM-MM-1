@@ -1,10 +1,10 @@
 <template>
     <div>
         <el-dialog
+                :title="isEdit == false ? '新增用户' : '编辑用户'"
                 :visible.sync="dialogVisible"
                 width="602px"
                 center>
-            <span slot="title" ref="edit">新增用户</span>
 
             <el-form :model="userForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
 
@@ -23,18 +23,18 @@
                 </el-form-item>
 
                 <el-form-item label="角色" prop="role_id">
-                    <el-select class="normal" v-model="userForm.role_id" placeholder="角色">
-                        <el-option label="管理员" value="2"></el-option>
-                        <el-option label="老师" value="3"></el-option>
-                        <el-option label="学生" value="4"></el-option>
+                    <el-select class="normal" v-model="userForm.role_id" placeholder="请选择角色" >
+                        <el-option label="管理员" :value="2"></el-option>
+                        <el-option label="老师" :value="3"></el-option>
+                        <el-option label="学生" :value="4"></el-option>
                     </el-select>
                 </el-form-item>
 
 
                 <el-form-item label="状态" prop="status">
-                    <el-select class="normal" v-model="userForm.status" placeholder="角色">
-                        <el-option label="启用" value="1"></el-option>
-                        <el-option label="禁用" value="0"></el-option>
+                    <el-select class="normal" v-model="userForm.status" placeholder="请选择状态">
+                        <el-option label="启用" :value="1"></el-option>
+                        <el-option label="禁用" :value="0"></el-option>
                     </el-select>
                 </el-form-item>
 
@@ -68,7 +68,7 @@
         name: "userAdd",
         data() {
             return {
-                editId:null,
+                isEdit:'',
 
                 msg: '',
                 dialogVisible: false,
@@ -77,8 +77,6 @@
                 totalPage:null,
 
                 userForm: {
-
-
                     username: '',
                     email: '',
                     phone: '',
@@ -118,13 +116,10 @@
 
             },
             addUser() {
-
-
-
                 this.$refs.ruleForm.validate((valid) => {
                     if (valid) {
 
-                        if(this.editId == null){
+                        if(this.isEdit == false){
                             // 添加 用户
                             //    表单校验成功后发送请求
                             addUser(this.userForm).then(res => {
@@ -185,18 +180,8 @@
                 //    关闭面板
                 this.dialogVisible = false;
                 //  注册后，重置表单数据
-                this.$refs.ruleForm.resetFields();
+                // this.$refs.ruleForm.resetFields();
             }
-        },watch: {
-            'editId': function (val) {
-                if (val != null) {
-                    this.userForm.id = this.editId;
-                    this.$refs.edit.innerText = '编辑用户';
-                } else {
-                    this.$refs.edit.innerText = '新增用户科';
-                }
-            }
-
         }
 
     }

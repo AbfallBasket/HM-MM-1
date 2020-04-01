@@ -133,7 +133,8 @@
                     userVeri: '',
                     avatar: '',
                     veri: '',
-                }, rules: {
+                },
+                rules: {
                     avatar: [
                         {required: true, message: '请选择头像!', trigger: 'blur'},
                     ],

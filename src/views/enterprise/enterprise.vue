@@ -25,11 +25,10 @@
                     <el-select v-model="formInline.status" placeholder="请选择状态">
                         <el-option selected label="所有" value="">
                         </el-option>
-                        <el-option label="启用" value="1">
+                        <el-option label="启用" :value="1">
                         </el-option>
-                        <el-option label="禁用" value="0">
+                        <el-option label="禁用" :value="0">
                         </el-option>
-
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -103,13 +102,13 @@
                         label="操作"
                         width="150">
                     <template slot-scope="props">
-                        <el-button type="text" @click="editSub(props.row.id,props.row)" size="small">编辑</el-button>
+                        <el-button type="text" @click="editSub(props.row)" size="small">编辑</el-button>
 
-                        <el-button type="text" size="small" @click="starStop(props.row.id,props.row.status)">
+                        <el-button type="text" size="small" @click="starStop(props.row)">
                             {{(props.row.status == 0)?'启用':'禁用' }}
                         </el-button>
 
-                        <el-button type="text" size="small" @click="removeSub(props.row.id)">删除</el-button>
+                        <el-button type="text" size="small" @click="removeSub(props.row)">删除</el-button>
                     </template>
 
                 </el-table-column>
@@ -142,7 +141,7 @@
 <script>
 
     // 获取 表格信息 接口
-    import {getEnterprise,removeEnter,setStarStop} from "@/api/enterprise";
+    import {getEnterprise, removeEnter, setStarStop} from "@/api/enterprise";
 
     // 添加学科的组件
     import addEnter from './enterAdd';
@@ -157,8 +156,6 @@
                 msg: '',
                 subjectList: [],
                 myStatus: '',
-                removeTemp:null,
-                tempStatus:null,
 
                 currentPage1: 1,
                 total: 0,
@@ -179,84 +176,65 @@
 
 
                 //    临时方法,判断是搜索还是普通的
-                isSearTemp:this.getMyTable,
+                isSearTemp: this.getMyTable,
             }
         }, methods: {
-            editSub(id,row){
-                if(row.id !== this.$refs.add.editId){
-                    // 点击后，把id传递给编辑页面
-                    this.$refs.add.editId = id;
-
-                    // 把 要编辑的内容 传递给 编辑框
-                    this.$refs.add.subForm = JSON.parse(JSON.stringify(row));
-                }
-                // 打开编辑学科
+            editSub(row) {
+                // 打开编辑 企业
                 this.$refs.add.dialogVisible = true;
-
+                // 点击后，把id传递给编辑页面
+                this.$refs.add.isEdit = true;
+                // 把 要编辑的内容 传递给 编辑框
+                this.$refs.add.$nextTick(() => {
+                    this.$refs.add.subForm = JSON.parse(JSON.stringify(row));
+                });
                 console.log('编辑企业');
-
-
             },
-            starStop(id,status){
-
-                if(status == 1){
-                    this.tempStatus = 0;
-                }else{
-                    this.tempStatus = 1;
-                }
-                setStarStop(id,this.tempStatus)
-                    .then(res =>{
+            starStop(row) {
+                setStarStop(row.id, row.status)
+                    .then(res => {
                         console.log(res);
 
-                        if(res.data.code == 200){
+                        if (res.data.code == 200) {
                             //    修改成功,刷新页面,弹框
                             this.isSearTemp(this.currentPage1, this.siziPage);
 
-                            if(this.tempStatus == 0){
+                            if (this.tempStatus == 0) {
                                 this.$message.error('禁用成功!');
-                            }else{
+                            } else {
                                 this.$message.success('启用成功!');
                             }
-                        }else{
+                        } else {
                             this.$message.error('修改失败!');
 
                         }
 
-                    }).catch(err =>{
+                    }).catch(err => {
 
                     console.log(err);
 
                 });
-
-                console.log('id:' + id);
-                console.log('status:' + status);
             },
-            removeSub(id){
-                console.log(id);
+            removeSub(row) {
+                console.log(row.id);
                 // 点击后，判断 数据是否只有一条
 
-                if(this.subjectList.length == 1){
+                if (this.subjectList.length == 1 && this.currentPage1 != 1) {
                     console.log('此时只有一条数据!');
-                    if(this.currentPage1 == 1){
-                        // 在只有一条数据,而且是第一页的情况下
-                        // 不需要 当前页数 -1 否则报错
-                        this.removeTemp = this.currentPage1;
-                    }else{
-                        this.removeTemp =this.currentPage1-1;
-                    }
-                }else{
-                    this.removeTemp = this.currentPage1;
+                    // 在只有一条数据,而且是第一页的情况下
+                    // 不需要 当前页数 -1 否则报错
+                    this.currentPage1--;
                 }
-                removeEnter(id).then(res =>{
+                removeEnter(row.id).then(res => {
                     console.log(res);
-                    if(res.data.code == 200){
+                    if (res.data.code == 200) {
                         // 删除成功后，刷新当前页
                         this.$message.success('删除成功!');
 
-                        this.isSearTemp(this.removeTemp, this.siziPage);
+                        this.isSearTemp(this.currentPage1, this.siziPage);
                     }
 
-                }).catch(err =>{
+                }).catch(err => {
 
                     console.log(err);
 
@@ -264,15 +242,18 @@
 
             },
             addSubject() {
-
-                console.log('添加企业');
-                // 假如是添加学科，则把编辑id清除
-                this.$refs.add.editId = null;
-
                 this.$refs.add.dialogVisible = true;
 
+                console.log('添加企业');
+
+                // 假如是添加学科，则把编辑id清除
+                this.$refs.add.isEdit = false;
+
+                this.$refs.add.$nextTick(() => {
+                    this.$refs.add.$refs['ruleForm'].resetFields();
+                });
             },
-            clearForm(){
+            clearForm() {
                 //    清空表单
                 this.$refs.searForm.resetFields();
 
@@ -332,7 +313,7 @@
                     console.log(err);
                 })
             }
-        }, created() {
+        }, mounted() {
             //    进入界面请求 学科列表
             this.isSearTemp();
 
@@ -341,7 +322,6 @@
 </script>
 
 <style scoped lang="less">
-
 
 
 </style>
